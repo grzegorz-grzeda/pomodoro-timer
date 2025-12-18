@@ -12,7 +12,7 @@ from datetime import datetime
 from tkinter import messagebox
 
 APP_TITLE="Pomodoro Timer"
-APP_GEOMETRY="400x370+50+50"
+APP_GEOMETRY="+50+50"  # Position only, size determined by content
 
 APP_BG_COLOR = "#2c3e50"
 
@@ -47,7 +47,7 @@ FONT_SIZE_TIME = 14
 FONT_SIZE_STATUS = 14
 FONT_SIZE_TIMER = 40
 FONT_SIZE_COUNTER = 10
-FONT_SIZE_BUTTON = 12
+FONT_SIZE_BUTTON = 10
 
 # Timing constants (milliseconds)
 CLOCK_UPDATE_INTERVAL = 250
@@ -57,14 +57,14 @@ TIMER_UPDATE_INTERVAL = 1000
 PADDING_TOP = 10
 PADDING_BOTTOM = 20
 PADDING_BUTTON_FRAME = 20
-PADDING_BUTTON = 5
+PADDING_BUTTON = 3
 PADDING_STATUS = 5
 PADDING_TIMER = 5
 PADDING_DIVIDER = 10
 DIVIDER_HEIGHT = 1
-BUTTON_WIDTH = 5
-BUTTON_PADX = 20
-BUTTON_PADY = 5
+BUTTON_WIDTH = 4
+BUTTON_PADX = 12
+BUTTON_PADY = 3
 
 # Pomodoro cycle
 LONG_BREAK_CYCLE = 4
@@ -103,7 +103,6 @@ class PomodoroTimer:
         """Create all UI elements"""
         self._create_time_display()
         self._create_timer_display()
-        self._create_buttons()
 
     def _create_time_display(self):
         """Create the current time display section"""
@@ -128,8 +127,16 @@ class PomodoroTimer:
 
     def _create_timer_display(self):
         """Create the pomodoro timer display section"""
+        # Main content frame to hold timer and buttons side by side
+        content_frame = tk.Frame(self.root, bg=APP_BG_COLOR)
+        content_frame.pack(pady=PADDING_STATUS, padx=10)
+
+        # Left side - Timer display
+        timer_frame = tk.Frame(content_frame, bg=APP_BG_COLOR)
+        timer_frame.grid(row=0, column=0, padx=(0, 20))
+
         self.status_label = tk.Label(
-            self.root,
+            timer_frame,
             text=WORK_TEXT,
             font=(FONT_FAMILY, FONT_SIZE_STATUS, 'bold'),
             bg=APP_BG_COLOR,
@@ -138,7 +145,7 @@ class PomodoroTimer:
         self.status_label.pack(pady=PADDING_STATUS)
 
         self.timer_label = tk.Label(
-            self.root,
+            timer_frame,
             font=(FONT_FAMILY, FONT_SIZE_TIMER, 'bold'),
             bg=APP_BG_COLOR,
             fg=COLOR_TEXT_PRIMARY
@@ -146,7 +153,7 @@ class PomodoroTimer:
         self.timer_label.pack(pady=PADDING_TIMER)
 
         self.counter_label = tk.Label(
-            self.root,
+            timer_frame,
             text="Pomodoros: 0",
             font=(FONT_FAMILY, FONT_SIZE_COUNTER),
             bg=APP_BG_COLOR,
@@ -154,30 +161,29 @@ class PomodoroTimer:
         )
         self.counter_label.pack()
 
-    def _create_buttons(self):
-        """Create all control buttons"""
-        button_frame = tk.Frame(self.root, bg=APP_BG_COLOR)
-        button_frame.pack(pady=PADDING_BUTTON_FRAME)
+        # Right side - Buttons in 2x2 grid
+        button_frame = tk.Frame(content_frame, bg=APP_BG_COLOR)
+        button_frame.grid(row=0, column=1)
 
         self.start_pause_button = self._create_button(
             button_frame, "Start", self.toggle_timer, COLOR_START_BUTTON, COLOR_START_BUTTON_ACTIVE
         )
-        self.start_pause_button.grid(row=0, column=0, padx=PADDING_BUTTON)
+        self.start_pause_button.grid(row=0, column=0, padx=PADDING_BUTTON, pady=PADDING_BUTTON)
 
         self.reset_button = self._create_button(
             button_frame, "Reset", self.reset_timer, COLOR_RESET_BUTTON, COLOR_RESET_BUTTON_ACTIVE
         )
-        self.reset_button.grid(row=0, column=1, padx=PADDING_BUTTON)
+        self.reset_button.grid(row=0, column=1, padx=PADDING_BUTTON, pady=PADDING_BUTTON)
 
         self.skip_button = self._create_button(
             button_frame, "Skip", self.skip_session, COLOR_SKIP_BUTTON, COLOR_SKIP_BUTTON_ACTIVE
         )
-        self.skip_button.grid(row=0, column=2, padx=PADDING_BUTTON)
+        self.skip_button.grid(row=1, column=0, padx=PADDING_BUTTON, pady=PADDING_BUTTON)
 
         self.close_button = self._create_button(
-            self.root, "Close", self.close_app, COLOR_CLOSE_BUTTON, COLOR_CLOSE_BUTTON_ACTIVE
+            button_frame, "Close", self.close_app, COLOR_CLOSE_BUTTON, COLOR_CLOSE_BUTTON_ACTIVE
         )
-        self.close_button.pack(pady=0)
+        self.close_button.grid(row=1, column=1, padx=PADDING_BUTTON, pady=PADDING_BUTTON)
 
     def _create_button(self, parent, text, command, bg_color, active_bg):
         """Create a styled button with common properties"""
