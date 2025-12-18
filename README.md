@@ -2,6 +2,8 @@
 
 A simple and elegant Pomodoro Timer application built with Python and Tkinter.
 
+![Pomodoro timer](/docs/img/image.png)
+
 ## Features
 
 - **Current Time Display**: Shows the current system time at the top of the window
